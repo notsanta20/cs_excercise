@@ -185,30 +185,14 @@ const postOrder = (root,callback = null) =>{
 const getHeight = (node,root) =>{
   let item = findValue(node, root);
   function findH(node){
-    let num = 0;
-    let a = 0;
-    let b = 0;
-    num++;
-    if(node.left !== null){
-      a = findH(node.left);
-    }
-    if(node.right !== null){
-      b = findH(node.right);
-    }
-    if(a > b){
-      num+= a;
-    }
-    else if(b > a){
-      num+= b;
-    }
-    else{
-      num+= a;
-    }
-    return num;
+    if(node === null) return 0;
+     let left = findH(node.left);
+    let right = findH(node.right);
+
+    return Math.max(left, right) + 1;
 
   }
   let num = findH(item);
-  num--;
   return num;
 }
 
@@ -227,16 +211,17 @@ const getDepth = (node,root) =>{
 }
 
 const isBalanced = (root) =>{
-  let l = getHeight(root.left.data, root.left);
-  let r = getHeight(root.right.data, root.right);
+  function dfs(node){
+    if(node === null) return [true, 0];
 
-  const val = l - r;
-  if(val >= -1 && val <= 1){
-    return true;
+    let left = dfs(node.left);
+    let right = dfs(node.right);
+
+    let balanced = (left[0] && right[0] && Math.abs(left[1] - right[1]) <= 1);
+    return [balanced, 1+ Math.max(left[1], right[1])];
   }
-  else{
-    return false;
-  }
+
+  return dfs(root)[0];
 }
 
 const reBalanced = (node) =>{
@@ -305,3 +290,4 @@ console.log(`In Order Traversal`);
 inOrder(root,test);
 console.log(`Post Order Traversal`);
 postOrder(root,test);
+
